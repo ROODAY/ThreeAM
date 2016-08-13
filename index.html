@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>3 in the morning</title>
+	<link rel="stylesheet" href="//necolas.github.io/normalize.css/4.1.1/normalize.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://code.getmdl.io/1.2.0/material.indigo-pink.min.css">
+	<script defer src="https://code.getmdl.io/1.2.0/material.min.js"></script>
+	<script src="phaser.min.js"></script>
+	<style type="text/css">
+		*, html {
+			margin: 0;
+			padding: 0;
+			text-align: center;
+		}
+		body {
+		    background-image: url("img/background.jpg");
+		    background-repeat: repeat;
+		    overflow: hidden;
+		}
+		canvas {
+		    padding-left: 0;
+		    padding-right: 0;
+		    margin-left: auto;
+		    margin-right: auto;
+		    display: block;
+		    width: 800px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Get the chip in the salsa!</h1>
+
+	<script>
+		var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+		var lost = false;
+
+		function preload() {
+			game.load.image('background', 'img/background.jpg');
+			game.load.image('player', 'img/player.png');
+			game.load.image('salsa', 'img/salsa.png');
+			game.load.image('witch', 'img/witch.png');
+		}
+
+		function create() {
+			game.physics.startSystem(Phaser.Physics.ARCADE);
+			game.add.sprite(0, 0, 'background');
+			witches = game.add.group();
+			witches.enableBody = true;
+			player = game.add.sprite(32, 0, 'player');
+			game.physics.arcade.enable(player);
+			player.body.bounce.y = 0.2;
+		    player.body.gravity.y = 300;
+		    player.body.collideWorldBounds = true;
+
+		    salsa = game.add.sprite(32, game.world.height - 50, 'salsa');
+		    game.physics.arcade.enable(salsa);
+		    salsa.body.collideWorldBounds = true;
+
+		    cursors = game.input.keyboard.createCursorKeys();
+
+		    for (var i = 0; i < 15; i++) {
+		        var witch = witches.create(game.world.randomX, game.world.height - 50, 'witch');
+		        witch.body.collideWorldBounds = true;
+		    }
+		}
+
+		var salsaSpeed = 750;
+
+		function winGame() {
+			window.location.replace("/win.html");
+		}
+		function loseGame() {
+			window.location.replace("/lose.html");
+		}
+		
+
+		function update() {
+			game.physics.arcade.collide(player, witches, loseGame);
+			game.physics.arcade.collide(player, salsa, winGame);
+
+			//if (cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown) {
+		        witches.forEach( function(witch) {
+					game.physics.arcade.accelerateToObject(witch, player, 600, 500, 500);
+				}, game.physics);
+		    /*} else {
+		    	witches.setAll('body.velocity.x', 0);
+		        witches.setAll('body.velocity.y', 0);
+		    }*/
+
+
+			salsa.body.velocity.x = salsaSpeed;
+
+			player.body.velocity.x = 0;
+			if (cursors.left.isDown) {
+		        player.body.velocity.x = -250;
+		    } else if (cursors.right.isDown) {
+		        player.body.velocity.x = 250;
+		    }
+		    if (cursors.up.isDown){
+		        player.body.velocity.y = -250;
+		    }
+		}
+
+		setInterval(function(){
+			var num = Math.round(Math.random());
+			if (num === 0) {
+				salsaSpeed = 750;
+			} else {
+				salsaSpeed = -750;
+			}
+		}, 500);
+	</script>
+</body>
+</html>
