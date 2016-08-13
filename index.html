@@ -70,10 +70,10 @@
 		var salsaSpeed = 750;
 
 		function winGame() {
-			window.location.replace("/win.html");
+			window.location.replace("win.html");
 		}
 		function loseGame() {
-			window.location.replace("/lose.html");
+			window.location.replace("lose.html");
 		}
 		
 
@@ -81,14 +81,9 @@
 			game.physics.arcade.collide(player, witches, loseGame);
 			game.physics.arcade.collide(player, salsa, winGame);
 
-			//if (cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown) {
-		        witches.forEach( function(witch) {
-					game.physics.arcade.accelerateToObject(witch, player, 600, 500, 500);
-				}, game.physics);
-		    /*} else {
-		    	witches.setAll('body.velocity.x', 0);
-		        witches.setAll('body.velocity.y', 0);
-		    }*/
+	        witches.forEach( function(witch) {
+				game.physics.arcade.accelerateToObject(witch, player, 600, 500, 500);
+			}, game.physics);
 
 
 			salsa.body.velocity.x = salsaSpeed;
